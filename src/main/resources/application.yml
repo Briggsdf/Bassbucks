@@ -1,0 +1,13 @@
+micronaut:
+  application:
+    name: bassbucks
+  security:
+    token:
+      jwt:
+        enabled: true
+        cookie:
+          enabled: true
+
+  server:
+    host: localhost
+    port: 8090

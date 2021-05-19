@@ -1,11 +1,27 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    // move it here
+    dependencies {
+        classpath 'com.google.cloud.tools:appengine-gradle-plugin:2.+'
+    }
+
+}
+
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.32"
     id("org.jetbrains.kotlin.kapt") version "1.4.32"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     id("io.micronaut.application") version "1.5.0"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.4.32"
-}
 
+
+}
+apply plugin: "com.google.cloud.tools.appengine-appyaml"
+apply plugin: "com.google.cloud.tools.appengine"
 version = "0.1"
 group = "io.codeworld"
 
@@ -22,6 +38,9 @@ micronaut {
     }
 }
 
+
+
+
 dependencies {
     kapt("io.micronaut.data:micronaut-data-processor")
     kapt("io.micronaut.openapi:micronaut-openapi")
@@ -34,7 +53,9 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("javax.annotation:javax.annotation-api")
+    implementation('com.google.cloud.tools:appengine-gradle-plugin:2.+')
     implementation("io.micronaut:micronaut-http")
+    implementation("com.google.cloud.tools:appengine-gradle-plugin:2.+")
     implementation ("com.google.firebase:firebase-admin:7.3.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation ("org.ktorm:ktorm-core:3.4.0")
@@ -49,7 +70,14 @@ dependencies {
     implementation("io.micronaut:micronaut-validation")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
-
+appengine {
+    stage.artifact =
+            "${buildDir}/libs/${project.name}-${project.version}.jar"
+    deploy {
+        projectId = "bassbucks-dev"
+        version = "1"
+    }
+}
 
 application {
     mainClass.set("io.codeworld.ApplicationKt")
@@ -57,6 +85,22 @@ application {
 java {
     sourceCompatibility = JavaVersion.toVersion("11")
 }
+apply plugin: "com.google.cloud.tools.appengine-appyaml"
+
+jar {
+    enabled = false
+    dependsOn(shadowJar{classifier = null})
+    manifest {
+        attributes(
+                'Main-Class': 'io.codeworld.ApplicationKt'
+        )
+    }
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
 
 tasks {
     compileKotlin {

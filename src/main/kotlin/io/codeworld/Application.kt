@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.info.*
 )
 object Api {
 }
+
 fun main(args: Array<String>) {
 	build()
 	    .args(*args)

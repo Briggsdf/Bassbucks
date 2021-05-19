@@ -6,6 +6,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*
 import io.micronaut.http.exceptions.HttpStatusException
 import io.micronaut.security.annotation.Secured
+import io.micronaut.security.authentication.Authentication
 import io.micronaut.security.rules.SecurityRule
 import java.security.Principal
 import javax.inject.Inject
@@ -48,12 +49,6 @@ class TournamentsController {
         @PathVariable tournamentId: Int
     ) = tournamentsService.delete(tournamentId)
 
-
-    @Get("/verification")
-    @Secured(SecurityRule.IS_AUTHENTICATED)
-    fun verify(principal: Principal): String {
-        return principal.toString()
-    }
 
 }
 
